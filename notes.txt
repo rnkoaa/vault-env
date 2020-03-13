@@ -1,0 +1,15 @@
+---
+vault:
+  auth:
+    enabled: true
+    user:
+    password:
+  url:
+secrets:
+  api:
+    key: secrets/fit_cost/dev/api.key
+    token: secrets/fit_cost/dev/api.token
+certs:
+listchars=tab:··,trail:·
+\|\
+listchars=tab:\|\··,trail:·
