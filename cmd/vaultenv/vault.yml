@@ -1,4 +1,4 @@
-vault:
-  url: http://localhost:8200
-  auth:
-    enabled: false
+api:
+  key: secret/api/key
+  token: secret/api/token
+  

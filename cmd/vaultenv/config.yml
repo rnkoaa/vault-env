@@ -1,4 +1,5 @@
 ---
 vault:
+  url: localhost:8200
   auth:
     enabled: false

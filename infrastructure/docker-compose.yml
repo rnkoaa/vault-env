@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  vault:
+    image: vault:1.1.0
+    cap_add:
+      - IPC_LOCK
+    container_name: vault
+    environment: 
+      - 'VAULT_DEV_ROOT_TOKEN_ID=default-token'
+    ports:
+      - 8200:8200

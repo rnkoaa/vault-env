@@ -13,3 +13,6 @@ certs:
 listchars=tab:··,trail:·
 \|\
 listchars=tab:\|\··,trail:·
+
+
+# vault https://github.com/slomek/walter/blob/master/main.go
