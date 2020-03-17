@@ -1,0 +1,4 @@
+---
+vault:
+  auth:
+    enabled: false

@@ -48,7 +48,7 @@ func er(msg interface{}) {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cobra.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ./config.yaml)")
 	rootCmd.PersistentFlags().StringP("author", "a", "YOUR NAME", "author name for copyright attribution")
 	rootCmd.PersistentFlags().StringVarP(&userLicense, "license", "l", "", "name of license for the project")
 	rootCmd.PersistentFlags().Bool("viper", true, "use Viper for configuration")
@@ -59,6 +59,7 @@ func init() {
 
 	// rootCmd.AddCommand(addCmd)
 	// rootCmd.AddCommand(initCmd)
+	rootCmd.AddCommand(renderCmd)
 }
 
 func initConfig() {
@@ -68,12 +69,13 @@ func initConfig() {
 	} else {
 		// Search config in home directory with name ".cobra" (without extension).
 		viper.AddConfigPath(".")
-		viper.SetConfigName("vault")
+		viper.SetConfigName("config")
 	}
 
 	viper.AutomaticEnv()
 
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	if err := viper.ReadInConfig(); err != nil {
+		// fmt.Println("Using config file:", viper.ConfigFileUsed())
+		er("unable to find config file to process. exiting.")
 	}
 }
