@@ -2,11 +2,17 @@ package dirs
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
+	"os"
 
 	"github.com/rnkoaa/vault-env/helpers"
 	"gopkg.in/yaml.v2"
+)
+
+var (
+	errorFileExists = errors.New("error file exists, not overwriting")
 )
 
 func readJSONFile(name string) (map[string]interface{}, error) {
@@ -23,6 +29,29 @@ func readJSONFile(name string) (map[string]interface{}, error) {
 		return nil, err
 	}
 	return m, nil
+}
+
+// WriteContentToFile -
+func WriteContentToFile(path string, content []byte, overwriteExisting bool) error {
+	if helpers.Exists(path) && !overwriteExisting {
+		return errorFileExists
+	}
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// file.WriteString("write file in golang")
+	_, err = file.Write(content)
+	if err != nil {
+		return err
+	}
+	err = file.Sync()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // ReadYamlMapFile -

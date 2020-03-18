@@ -90,6 +90,19 @@ func FlattenYaml(yamlContent []byte) map[string]interface{} {
 	return Flatten(yamlBytes)
 }
 
+// ExpandJSON -
+// Expands a json content from flattened content into a well formed json structure
+func ExpandJSON(content map[string]interface{}) ([]byte, error) {
+	expandedContent := bellows.Expand(content)
+	b, err := json.Marshal(expandedContent)
+	if err != nil {
+		log.Printf("error converting map to json")
+		return nil, err
+	}
+
+	return b, nil
+}
+
 // ExpandYaml -
 // Expands a yaml content from flattened content into a well formed yaml structure
 func ExpandYaml(yamlMap map[string]interface{}) ([]byte, error) {

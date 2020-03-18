@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 
+	"github.com/rnkoaa/vault-env/dirs"
 	"github.com/rnkoaa/vault-env/helpers"
 	"github.com/rnkoaa/vault-env/secret"
 	"github.com/spf13/cobra"
@@ -50,36 +51,22 @@ var renderCmd = &cobra.Command{
 	Short: "render values from vault",
 	Long:  `render values from vault using a configuration file`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// if vaultConf.AuthEnabled {
-		// 	switch vaultConf.AuthMethod {
-		// 	case "ldap":
-		// 		fmt.Println("logging in as ldap")
-		// 	case "oauth":
-		// 		fmt.Println("logging in with oauth")
-		// 	case "token":
-		// 		fmt.Println("logging in with token")
-		// 	default:
-		// 		fmt.Println("method not selected. please choose a method")
-		// 		os.Exit(1)
-		// 	}
-		// } else {
-		// 	fmt.Println("Authentication not enabled, so just logging in.")
-		// }
-
-		// secret.NewAuth(vaultConf.AuthMethod, vaultConf.)
-
 		vaultClient = createVaultClient(vaultConf)
 
 		renderConfig := new(defaultFormat, inputFile, outputFile, outputFormat)
 		if err := processRender(renderConfig); err != nil {
 			er(err)
+		} else {
+			fmt.Printf("Done rendering secrets to %s\n", outputFile)
 		}
 	},
 }
 
 func createVaultClient(v *VaultConfig) *secret.VaultClient {
 	auth := createAuth(v)
-	return secret.NewClient(v.URL, auth)
+	client := secret.NewClient(v.URL, auth)
+	client.SecretsVersion = v.SecretVersion
+	return client
 }
 
 func createAuth(v *VaultConfig) *secret.VaultAuth {
@@ -123,7 +110,7 @@ func processYamlFile(r *RenderConfig) error {
 		return errors.New("error flattening yaml, look into fixing it")
 	}
 
-	values, errs := resolveValues(flattened)
+	values, errs := vaultClient.ResolveValues(flattened)
 	if len(errs) > 0 {
 		for k, e := range errs {
 			log.Printf("error resolving key: %s, %v\n", k, e)
@@ -140,45 +127,16 @@ func processYamlFile(r *RenderConfig) error {
 		}
 	}
 
-	printMap(resolvedValues)
-
 	// expand resolvedValues
-
-	// write to file
-
-	return nil
-}
-
-func resolveValues(values map[string]interface{}) (map[string]interface{}, map[string]error) {
-	errs := make(map[string]error, 0)
-	res := make(map[string]interface{})
-	for k, v := range values {
-		if v != nil {
-			value, err := resolveValue(v.(string))
-			if err != nil {
-				errs[k] = err
-				if len(errs) >= 3 {
-					log.Printf("too many errors encountered when reading secrets. exiting...")
-					break
-				}
-			} else {
-				res[k] = value
-			}
-		} else {
-			errs[k] = errors.New("nil value for key")
-			if len(errs) >= 3 {
-				log.Printf("too many errors encountered when reading secrets. exiting...")
-				break
-			}
-		}
+	res, err := helpers.ExpandYaml(resolvedValues)
+	if err != nil {
+		return err
 	}
-	return res, errs
+	// write to file
+	// write the content overwriting any content of the file.
+	return dirs.WriteContentToFile(r.OutputFile, res, true)
 }
 
-func resolveValue(key string) (string, error) {
-
-	return "", nil
-}
 func processJSONFile(r *RenderConfig) error {
 	return nil
 }

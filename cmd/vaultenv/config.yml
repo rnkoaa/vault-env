@@ -1,5 +1,11 @@
 ---
 vault:
-  url: localhost:8200
+  url: http://localhost:8200
   auth:
+    token: default-token
+    method: token
     enabled: false
+secrets:
+  version: 1
+  output:
+    file: secret.yml

@@ -8,12 +8,13 @@ import (
 
 // VaultConfig -
 type VaultConfig struct {
-	URL         string
-	AuthEnabled bool
-	AuthMethod  string
-	Username    string
-	Password    string
-	Token       string
+	URL           string
+	SecretVersion int
+	AuthEnabled   bool
+	AuthMethod    string
+	Username      string
+	Password      string
+	Token         string
 }
 
 // LoadConfig - create a new config object from viper configs
@@ -26,6 +27,14 @@ func LoadConfig() *VaultConfig {
 	conf.AuthMethod = viper.GetString("vault.auth.method")
 	conf.Password = viper.GetString("vault.auth.password")
 	conf.Token = viper.GetString("vault.auth.token")
+	secretsVersion := viper.GetInt("secrets.version")
+
+	// secretsVersion paths changed from version 1 to version 2
+	if secretsVersion < 1 {
+		secretsVersion = 1
+	}
+
+	conf.SecretVersion = secretsVersion
 	return conf
 }
 

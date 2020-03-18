@@ -45,9 +45,12 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&configFile, "config", "", "config file (default is config.yml)")
 
 	renderCmd.PersistentFlags().StringVarP(&inputFile, "input", "i", "vault.yml", "input file to process for vault keys")
-	renderCmd.PersistentFlags().StringVarP(&outputFile, "output", "o", "", "output file of output (yaml, json, table)")
+	renderCmd.PersistentFlags().StringP("output", "o", "secret.yml", "output file of output (yaml, json, table)")
 	renderCmd.PersistentFlags().StringVarP(&outputFormat, "format", "f", defaultFormat, "format of output (yaml, json, table)")
+	viper.BindPFlag("secrets.output.file", renderCmd.PersistentFlags().Lookup("output"))
 	rootCmd.AddCommand(renderCmd)
+
+	outputFile = viper.GetString("secrets.output.file")
 }
 
 func initConfig() {
