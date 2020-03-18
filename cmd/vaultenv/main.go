@@ -11,8 +11,6 @@ import (
 
 var (
 	// Used for flags.
-	// https://github.com/spf13/cobra
-	// https://github.com/spf13/viper
 	configFile   string
 	outputFile   string
 	inputFile    string

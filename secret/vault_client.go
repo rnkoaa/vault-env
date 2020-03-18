@@ -72,10 +72,10 @@ func processLDAPLogin(v *VaultClient) error {
 }
 
 func ldapLogin(address string, auth *VaultAuth) (*VaultResponseAuth, error) {
-	log.Printf("\nlogging into vault using ldap for user %s", auth.Username)
+	log.Printf("logging into vault using ldap for user %s", auth.Username)
 	s.Start()
 	requestURL := fmt.Sprintf("%s/v1/auth/ldap/login/%s", address, auth.Username)
-	body := fmt.Sprintf("{\"password\": \"%s\"}", auth.Password)
+	body := fmt.Sprintf(`{"password": "%s"}`, auth.Password)
 
 	reqBody := []byte(body)
 	resp, err := httpRequests.MakePostForResponse(requestURL, reqBody)
@@ -89,8 +89,7 @@ func ldapLogin(address string, auth *VaultAuth) (*VaultResponseAuth, error) {
 // RenewToken Renew a Token that has not expired
 func (v *VaultClient) RenewToken(token string) (*VaultResponseAuth, error) {
 	requestURL := fmt.Sprintf("%s/v1/auth/token/renew-self", v.Address)
-	body := `{"increment": 1800}`
-	reqBody := []byte(body)
+	reqBody := []byte(`{"increment": 1800}`)
 	reqHeaders := make(map[string]interface{})
 	reqHeaders["X-Vault-Token"] = token
 	resp, err := httpRequests.MakePostWithHeadersForResponse(requestURL, reqHeaders, reqBody)

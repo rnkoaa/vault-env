@@ -19,27 +19,6 @@ var (
 	ErrorFileTypeUndetermined = fmt.Errorf("file type not determined")
 )
 
-// func resolveSecretConfigFile(vaultTeam, vaultEnv string, secretConfigFile *domain.ClusterConfig) error {
-// 	if secretConfigFile.Content != nil {
-// 		flattenedContent := helpers.FlattenYaml(secretConfigFile.Content)
-// 		resolvedSecrets, errs := secrets.ResolveSecrets(vaultTeam, vaultEnv, flattenedContent)
-// 		if len(errs) > 0 {
-// 			var s = fmt.Sprintf("There are %d errors when resolving secrets.\n", len(errs))
-// 			for _, err := range errs {
-// 				s += fmt.Sprintf("%s\n", err)
-// 			}
-// 			return fmt.Errorf("%s", s)
-// 		}
-
-// 		ymlData, err := helpers.ExpandYaml(resolvedSecrets)
-// 		if err != nil {
-// 			return err
-// 		}
-// 		secretConfigFile.Content = ymlData
-// 	}
-// 	return nil
-// }
-
 // DeepCopy -
 func DeepCopy(dst, src interface{}) error {
 	r, w, err := os.Pipe()
