@@ -1,0 +1,10 @@
+secret:
+  template:
+    file: secret.tpl.yml
+  output:
+    file: secret.yml
+vault:
+  secret:
+    version: 1
+  auth:
+    file: vault-secret.yml

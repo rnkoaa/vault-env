@@ -15,3 +15,5 @@
 # vendor/
 cmd/vaultenv/vaultenv
 cmd/vaultenv/vault-env
+cmd/vaultenv/secret.yml
+cmd/vaultenv/vault-secret.yml
