@@ -17,4 +17,6 @@ vault kv put secret/prod/api.token value=abcdefghijklmnopqrstuvwxyz
 # vault 0.7.3
 vault list secret/prod
 vault write secret/prod user=richard
+vault write secret/prod/api.key value=123456789
+vault write secret/prod/api.token value=abcdefghijklmnopqrstuvwxyz
 vault read secret/prod

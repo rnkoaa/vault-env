@@ -1,6 +1,0 @@
-api:
-  key: secret/prod/api.key
-  token: secret/data/prod/api.token
-cassandra:
-  username: secret/data/prod/cassandra.username
-  

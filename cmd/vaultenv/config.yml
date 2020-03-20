@@ -5,7 +5,7 @@ vault:
     token: default-token
     method: token
     enabled: false
-secrets:
+secret:
   version: 1
   output:
     file: secret.yml
