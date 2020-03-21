@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/rnkoaa/vault-env/render"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -25,12 +26,15 @@ func init() {
 	renderCmd.PersistentFlags().StringP("input", "i", "vault.yml", "input file to process for vault keys")
 	renderCmd.PersistentFlags().StringP("output", "o", "secret.yml", "output file of output (yaml, json, table)")
 	renderCmd.PersistentFlags().StringVarP(&outputFormat, "format", "f", defaultFormat, "format of output (yaml, json, table)")
-	viper.BindPFlag("secrets.output.file", renderCmd.PersistentFlags().Lookup("output"))
-	viper.BindPFlag("secret.template.file", renderCmd.PersistentFlags().Lookup("input"))
+	viper.BindPFlag("vault.secret.output.file", renderCmd.PersistentFlags().Lookup("output"))
+	viper.BindPFlag("vault.secret.template.file", renderCmd.PersistentFlags().Lookup("input"))
 	rootCmd.AddCommand(renderCmd)
 
 	// outputFile = viper.GetString("secrets.output.file")
 	initConfig()
+
+	// initialize any variables the secret package may need
+	render.Init()
 }
 
 func initConfig() {
@@ -42,9 +46,7 @@ func initConfig() {
 		viper.AddConfigPath(".")
 		viper.SetConfigName("config")
 	}
-	if err := viper.ReadInConfig(); err != nil {
-		er("error reading config file. please provide config.")
-	}
+	viper.ReadInConfig()
 
 	viper.SetConfigType("yaml")
 	viper.SetConfigFile("runtime.yml")
@@ -63,13 +65,12 @@ func initConfig() {
 		}
 	}
 
-	// viper.AddConfigPath("/tap/secret/secret")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
 
 	vaultConf = LoadConfig()
-	viperKeys := viper.AllKeys()
-	for _, key := range viperKeys {
-		fmt.Printf("Key: %s\n", key)
-	}
+	// viperKeys := viper.AllKeys()
+	// for _, key := range viperKeys {
+	// 	fmt.Printf("Key: %s\n", key)
+	// }
 }

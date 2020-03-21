@@ -120,6 +120,8 @@ func (v *VaultClient) ResolveValues(values map[string]interface{}) (map[string]i
 	}
 	for k, value := range values {
 		if v != nil {
+			// keyItem := value.(string)
+
 			value, err := v.ResolveValue(value.(string))
 			if err != nil {
 				errs[k] = err
@@ -145,6 +147,7 @@ func processKey(secretsVersion int, key string) string {
 	if strings.HasPrefix(key, secretPathPrefix) {
 		return key
 	}
+
 	switch secretsVersion {
 	case 1:
 		return fmt.Sprintf(v1SecretPathPrefix, key)
@@ -164,6 +167,7 @@ func (v *VaultClient) ResolveValue(key string) (string, error) {
 
 	// process the key path based on the version of secrets engine.
 	k := processKey(v.SecretsVersion, key)
+
 	secret, err := v.Client.Logical().Read(k)
 	if err != nil {
 		return "", err

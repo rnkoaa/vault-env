@@ -15,6 +15,7 @@ func LoadConfig() *render.VaultConfig {
 	conf.AuthMethod = viper.GetString("vault.auth.method")
 	conf.Password = viper.GetString("vault.auth.password")
 	conf.Token = viper.GetString("vault.auth.token")
+	conf.Team = viper.GetString("vault.team")
 	secretsVersion := viper.GetInt("vault.secrets.version")
 
 	// secretsVersion paths changed from version 1 to version 2

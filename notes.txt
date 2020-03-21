@@ -7,12 +7,10 @@ vault:
   url:
 secrets:
   api:
-    key: secrets/fit_cost/dev/api.key
-    token: secrets/fit_cost/dev/api.token
+    key: secrets/github/dev/api.key
+    token: secrets/github/dev/api.token
 certs:
 listchars=tab:··,trail:·
 \|\
 listchars=tab:\|\··,trail:·
 
-
-# vault https://github.com/slomek/walter/blob/master/main.go

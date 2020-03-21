@@ -3,11 +3,11 @@
 version: '2'
 
 vars:
-  GREETING: Hello, World!
   APPLICATION: vault-env
 
 tasks:
   default:
     cmds:
+      - rm -f {{.APPLICATION}}
       - go build -o {{.APPLICATION}} .
     silent: true
