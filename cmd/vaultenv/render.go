@@ -20,8 +20,8 @@ var renderCmd = &cobra.Command{
 	Short: "render values from vault",
 	Long:  `render values from vault using a configuration file`,
 	Run: func(cmd *cobra.Command, args []string) {
-		secretTemplateFile = viper.GetString("secret.template.file")
-		outputFile = viper.GetString("secret.output.file")
+		secretTemplateFile = viper.GetString("vault.secret.template.file")
+		outputFile = viper.GetString("vault.secret.output.file")
 		if secretTemplateFile == "" {
 			fmt.Printf("secret template file '<empty>' not found\n")
 			er(render.ErrorInputFileNotFound)
@@ -33,7 +33,6 @@ var renderCmd = &cobra.Command{
 		}
 		vaultClient = render.CreateVaultClient(vaultConf)
 
-		fmt.Println(renderConfig.ToString())
 		if err := render.DoRender(vaultClient, renderConfig); err != nil {
 			er(err)
 		} else {

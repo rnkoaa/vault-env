@@ -1,9 +1,11 @@
 package secret
 
-import "fmt"
+import (
+	"fmt"
+)
 
 var (
-	defaultVaultAddress = "localhost:8200"
+	defaultVaultAddress = "http://localhost:8200"
 	defaultAuthMethod   = "Token"
 	defaultToken        = "default-token"
 	secretPathPrefix    = "secret/"

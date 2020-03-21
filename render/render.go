@@ -1,22 +1,45 @@
 package render
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
+	"strings"
+	"text/template"
 
 	"github.com/rnkoaa/vault-env/dirs"
 	"github.com/rnkoaa/vault-env/helpers"
 	"github.com/rnkoaa/vault-env/secret"
+	"github.com/spf13/viper"
 )
 
 var (
 	// ErrorInputFileNotFound -
 	ErrorInputFileNotFound  = fmt.Errorf("Input file not found")
 	errorTooManyVaultErrors = errors.New("too many vault errors")
+	keyPrefixTemplate       *template.Template
+	keyPrefix               KeyPrefix
 )
+
+// Init - Initialize render package
+func Init() {
+	var err error
+	keyPrefixTemplate, err = renderPrefixTemplate()
+	if err != nil {
+		fmt.Printf("error generating key prefix template. ensure it is well formatted.")
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	keyPrefix = KeyPrefix{
+		VaultTeam:        viper.GetString("vault.team"),
+		CloudEnvironment: viper.GetString("cloud.environment"),
+	}
+}
 
 // Config - config to process
 type Config struct {
@@ -28,6 +51,7 @@ type Config struct {
 
 // VaultConfig -
 type VaultConfig struct {
+	Team          string
 	URL           string
 	SecretVersion int
 	AuthEnabled   bool
@@ -153,6 +177,14 @@ func processYamlFile(v *secret.VaultClient, c *Config) error {
 		return errors.New("error flattening yaml, look into fixing it")
 	}
 
+	for k, v := range flattened {
+		if v != nil {
+			item := v.(string)
+			rk := renderKey(item)
+			flattened[k] = rk
+		}
+	}
+
 	values, errs := v.ResolveValues(flattened)
 	if len(errs) > 0 {
 		for k, e := range errs {
@@ -192,4 +224,33 @@ func printMap(m map[string]interface{}) {
 			fmt.Printf("Key: %s has null value.\n", k)
 		}
 	}
+}
+
+func renderPrefixTemplate() (*template.Template, error) {
+	vaultKeyPrefixTpl := viper.GetString("vault.secret.key.prefix")
+	if vaultKeyPrefixTpl == "" {
+		fmt.Printf("No secret key prefix found.")
+		return nil, nil
+	}
+	return template.New("VaultKeyPrefix").Parse(vaultKeyPrefixTpl)
+}
+
+// KeyPrefix - used for executing key
+type KeyPrefix struct {
+	VaultTeam        string
+	CloudEnvironment string
+}
+
+func renderKey(key string) string {
+	if strings.HasPrefix(key, "secret/") || strings.HasPrefix(key, "secret/data/") {
+		return key
+	}
+	var b bytes.Buffer
+	err := keyPrefixTemplate.Execute(&b, keyPrefix)
+	if err != nil {
+		fmt.Printf("error rendering key: %s\n", key)
+		fmt.Println(err)
+		return ""
+	}
+	return fmt.Sprintf("%s/%s", b.String(), key)
 }
