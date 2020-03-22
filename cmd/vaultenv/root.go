@@ -38,6 +38,14 @@ func init() {
 }
 
 func initConfig() {
+
+	viper.SetConfigType("yaml")
+	viper.SetConfigFile("runtime.yml")
+	if err := viper.ReadInConfig(); err != nil {
+		fmt.Println("error reading and merging config file. please provide config.")
+		er(err)
+	}
+
 	if configFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(configFile)
@@ -46,14 +54,7 @@ func initConfig() {
 		viper.AddConfigPath(".")
 		viper.SetConfigName("config")
 	}
-	viper.ReadInConfig()
-
-	viper.SetConfigType("yaml")
-	viper.SetConfigFile("runtime.yml")
-	if err := viper.MergeInConfig(); err != nil {
-		fmt.Println("error reading and merging config file. please provide config.")
-		er(err)
-	}
+	viper.MergeInConfig()
 
 	vaultAuthFile := viper.GetString("vault.auth.file")
 	if vaultAuthFile != "" {

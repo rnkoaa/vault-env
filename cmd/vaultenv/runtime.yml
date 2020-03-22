@@ -30,9 +30,6 @@ vault:
     output:
       file: secret.yml
     key:
-      # prefix: "{{.VaultTeam}}/dev"
-      # prefix: "github/{{.CloudEnvironment}}"
-      # prefix: "github/dev"
       prefix: "{{.VaultTeam}}/{{.CloudEnvironment}}"
     version: 1
   auth:
