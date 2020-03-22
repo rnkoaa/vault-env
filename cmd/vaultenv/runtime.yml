@@ -1,28 +1,7 @@
 # This provides additional configuration for each Config item.  
-config:
-  - key: stuff.yml # The Config KEY in TAP
-    destination: /custom/stuff.yml # A symlink will be created at this path to /tap/config/${key}
-    encoding: base64 # Optional parameter which, if provided, decodes a base64 encoded config item's contents before writing to the file. Defaults to 'text' if not provided.
-  - key: things.yml
-    destination: /custom/things.yml
-# This section is the same as Config, but for Secret items
-secret:
-  - key: secret.yml
-    destination: /tap/secret/secert.yml
-    encoding: base64 # Optional parameter for base64 decoding. Defaults to 'text' if not provided.
-# This section configures the behavior after Config/Secrets are downloaded
-run:
-  # This section configures what command gets executed after downloading config/secrets
-  command: ["/custom/start.sh", "--log-level", "debug"]   
-  exec: true # This configures if the command should be executed, or if the runtime-connector should exit after downloading
-  
-# This section configures the metadata metrics emitted by all the platform connectors used by the TAP team
-metadata:
-  language: python # What language is used (can be omitted)
-  framework: flask # What high level framework is used (can be omitted)
 
 vault:
-  # url: http://localhost:8200
+  url: http://localhost:8200
   team: github
   secret:
     template:
