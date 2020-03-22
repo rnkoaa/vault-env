@@ -145,7 +145,7 @@ func MakePostRequestWithResponse(endpoint string, body []byte, response interfac
 		defer resp.Body.Close()
 		data, _ := ioutil.ReadAll(resp.Body)
 		resMessage := string(data)
-		return resp.StatusCode, fmt.Errorf("%d => %s", resp.Status, resMessage)
+		return resp.StatusCode, fmt.Errorf("%d => %s", resp.StatusCode, resMessage)
 	}
 }
 

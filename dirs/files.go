@@ -42,7 +42,6 @@ func WriteContentToFile(path string, content []byte, overwriteExisting bool) err
 	}
 	defer file.Close()
 
-	// file.WriteString("write file in golang")
 	_, err = file.Write(content)
 	if err != nil {
 		return err

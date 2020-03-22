@@ -19,9 +19,12 @@ var (
 	defaultFormat = "yaml"
 	vaultConf     *render.VaultConfig
 	rootCmd       = &cobra.Command{
-		Use:   "cobra",
-		Short: "A generator for Cobra based Applications",
-		Long:  `Cobra is a CLI library for Go that empowers applications. This application is a tool to generate the needed files to quickly create a Cobra application.`,
+		Use:   "vault-env",
+		Short: "An application to sync enterprise secrets vault into containers before they start up.",
+		Long: `As applications are deployed to in containers, they will need their secrets. 
+In order to prevent secret sprawl and prevent secret leakage, 
+this application takes authentication configs from the orchestration environment, 
+logs into vault and generates the secret properties before the application starts up.`,
 	}
 )
 
