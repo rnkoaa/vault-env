@@ -45,11 +45,6 @@ func Flatten(content []byte) map[string]interface{} {
 	defer func() {
 		if r := recover(); r != nil {
 			res = make(map[string]interface{})
-			//var ok bool
-			//err, ok := r.(error)
-			//if !ok {
-			//	err = fmt.Errorf("pkg: %v", r)
-			//}
 		}
 	}()
 

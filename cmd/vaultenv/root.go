@@ -69,8 +69,4 @@ func initConfig() {
 	viper.AutomaticEnv()
 
 	vaultConf = LoadConfig()
-	// viperKeys := viper.AllKeys()
-	// for _, key := range viperKeys {
-	// 	fmt.Printf("Key: %s\n", key)
-	// }
 }
