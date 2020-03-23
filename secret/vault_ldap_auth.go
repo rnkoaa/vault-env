@@ -76,6 +76,7 @@ func processAuthResponse(resp *http.Response) (*VaultResponseAuth, error) {
 		}
 		return response.Auth, nil
 	}
+	fmt.Printf("Response Code: %d\n", resp.StatusCode)
 	// not successful
 	switch resp.StatusCode {
 	case http.StatusNotFound:

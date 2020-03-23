@@ -11,6 +11,10 @@ From source:
 
 ## Installation
 
+### Requirements
+
+Go `1.12.6` or higher which can be downloaded from [here](https://golang.org/dl/).
+
 ### From source:
 
 1.  Run `git clone <vault-env repo>`
@@ -91,6 +95,8 @@ Currently, only two vault authentication modes are supported.
 ## Known Issues
 
 ## Contributing
+
+Contributions in the form of patches, PR's and Issues are welcome. All submissions, including submissions by project members, require review. We use GitHub pull requests for this purpose. 
 
 ## Developing
 

@@ -4,10 +4,28 @@ version: '2'
 
 vars:
   APPLICATION: vault-env
+  VERSION: 0.0.2
+  GO_LDFLAGS: '-ldflags "-s -w -X main.Version=v0.0.2"'
 
 tasks:
   default:
     cmds:
       - rm -f {{.APPLICATION}}
       - go build -o {{.APPLICATION}} .
+    silent: true
+  linux:
+    cmds:
+      - go build -o "{{.APPLICATION}}-linux-amd64-{{.VERSION}}" {{.GO_LDFLAGS}} .
+    env:
+      CGO_ENABLED: '0'
+      GOOS: 'linux'
+      GOARCH: 'amd64'
+    silent: true
+  darwin:
+    cmds:
+      - go build -o "{{.APPLICATION}}-darwin-amd64-{{.VERSION}}" {{.GO_LDFLAGS}} .
+    env:
+      CGO_ENABLED: '0'
+      GOOS: darwin
+      GOARCH: amd64
     silent: true

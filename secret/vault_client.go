@@ -44,11 +44,11 @@ func (v *VaultClient) Login() error {
 	case strings.ToLower("Ldap"):
 		return processLDAPLogin(v)
 	}
-
-	return nil
+	return errors.New("undetermined authentication method")
 }
 
 func processTokenAuth(v *VaultClient) error {
+	fmt.Println("processing authentication using token")
 	if v.Auth.Token == "" {
 		return errorEmptyToken
 	}
@@ -58,6 +58,7 @@ func processTokenAuth(v *VaultClient) error {
 }
 
 func processLDAPLogin(v *VaultClient) error {
+	fmt.Println("processing authentication using ldap")
 	authResponse, err := ldapLogin(v.Address, v.Auth)
 	if err != nil {
 		return err
@@ -65,6 +66,8 @@ func processLDAPLogin(v *VaultClient) error {
 	if authResponse == nil {
 		return fmt.Errorf("no vault response")
 	}
+
+	fmt.Printf("Successfully authenticated to %s\n", v.Address)
 	v.Auth.Token = authResponse.ClientToken
 	v.IsAuthenticated = true
 	v.Client.SetToken(authResponse.ClientToken)
@@ -118,6 +121,16 @@ func (v *VaultClient) ResolveValues(values map[string]interface{}) (map[string]i
 			return res, errs
 		}
 	}
+
+	if v.Client.Token() == "" {
+		if v.Auth.Token != "" {
+			v.Client.SetToken(v.Auth.Token)
+		} else {
+			errs["AuthError"] = fmt.Errorf("client token is empty for method [%s] and user (%s)", v.Auth.Method, v.Auth.Username)
+			return res, errs
+		}
+	}
+
 	for k, value := range values {
 		if v != nil {
 			// keyItem := value.(string)
@@ -158,12 +171,6 @@ func processKey(secretsVersion int, key string) string {
 
 // ResolveValue -
 func (v *VaultClient) ResolveValue(key string) (string, error) {
-	if !v.IsAuthenticated {
-		err := v.Login()
-		if err != nil {
-			return "", err
-		}
-	}
 
 	// process the key path based on the version of secrets engine.
 	k := processKey(v.SecretsVersion, key)

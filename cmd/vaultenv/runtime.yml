@@ -23,17 +23,18 @@ metadata:
 
 vault:
   # url: http://localhost:8200
-  team: github
+  url: https://prod.vault.target.com
+  team: fit_cost
   secret:
     template:
-      file: secret.tpl.yml
+      file: /tap/config/secret.tpl.yml
     output:
-      file: secret.yml
+      file: /tap/secret/secret.yml
     key:
       prefix: "{{.VaultTeam}}/{{.CloudEnvironment}}"
     version: 1
   auth:
-    method: token
-    # method: ldap
+    # method: token
+    method: ldap
     enabled: true
-    file: vault-secret.yml
+    file: /tap/secret/vault-secret.yml
