@@ -31,7 +31,8 @@ vault:
     output:
       file: /tap/secret/secret.yml
     key:
-      prefix: "{{.VaultTeam}}/{{.CloudEnvironment}}"
+      prefix: fit_cost/prod
+      # prefix: "{{.VaultTeam}}/{{.CloudEnvironment}}"
     version: 1
   auth:
     # method: token
