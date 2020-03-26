@@ -24,12 +24,6 @@ secrets:
     engine: native
     type: repo
 steps:
-  # - name: echo
-  #   image: alpine:latest
-  #   secrets: [ docker_username, docker_password ]
-  #   commands:
-  #     - echo DockerUser ${DOCKER_USERNAME} - ${DOCKER_PASSWORD}   # Output Hello, World 
-
   - name: restore_cache
     image: docker.target.com/vela-plugins/s3-cache:6b85c7ec
     secrets:
