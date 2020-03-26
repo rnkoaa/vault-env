@@ -15,14 +15,14 @@ secrets:
     engine: native
     type: shared
   - name: docker_username
-    key: AgitatedTorvalds/vault-env/docker_username
+    key: AgitatedTorvalds/docker_username
     engine: native
-    type: repo
+    type: org
 
   - name: docker_password
-    key: AgitatedTorvalds/tap-octobot/docker_password
+    key: AgitatedTorvalds/docker_password
     engine: native
-    type: repo
+    type: org
 steps:
   - name: restore_cache
     image: docker.target.com/vela-plugins/s3-cache:6b85c7ec
