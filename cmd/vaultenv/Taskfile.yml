@@ -3,19 +3,21 @@
 version: '2'
 
 vars:
-  APPLICATION: vault-env
+  BIN_NAME: vault-env
+  BIN_DIR: bin
+  DIST_DIR: distribution
   VERSION: 0.0.2
   GO_LDFLAGS: '-ldflags "-s -w -X main.Version=v0.0.2"'
 
 tasks:
   default:
     cmds:
-      - rm -f {{.APPLICATION}}
-      - go build -o {{.APPLICATION}} .
+      - rm -f {{.BIN_NAME}}
+      - go build -o {{.BIN_NAME}} .
     silent: true
   linux:
     cmds:
-      - go build -o "{{.APPLICATION}}-linux-amd64-{{.VERSION}}" {{.GO_LDFLAGS}} .
+      - go build -o "{{.BIN_NAME}}-linux-amd64-{{.VERSION}}" {{.GO_LDFLAGS}} .
     env:
       CGO_ENABLED: '0'
       GOOS: 'linux'
@@ -23,9 +25,34 @@ tasks:
     silent: true
   darwin:
     cmds:
-      - go build -o "{{.APPLICATION}}-darwin-amd64-{{.VERSION}}" {{.GO_LDFLAGS}} .
+      - go build -o "{{.BIN_NAME}}-darwin-amd64-{{.VERSION}}" {{.GO_LDFLAGS}} .
     env:
       CGO_ENABLED: '0'
       GOOS: darwin
       GOARCH: amd64
     silent: true
+
+  distribution:
+    cmds:
+      - task: clean
+      - task: dist-linux
+      - task: dist-darwin
+
+  dist-darwin:
+    cmds:
+    - mkdir -p "{{.BIN_DIR}}/darwin"
+    - mkdir -p "{{.DIST_DIR}}"
+    - go build -o "{{.BIN_DIR}}/darwin/{{.BIN_NAME}}-darwin-amd64-{{.VERSION}}" {{.GO_LDFLAGS}} .
+    - tar -C bin/darwin/ -czf "{{.DIST_DIR}}/{{.BIN_NAME}}-darwin-amd64-{{.VERSION}}.tar.gz"  "{{.BIN_NAME}}-darwin-amd64-{{.VERSION}}"
+
+  dist-linux:
+    cmds:
+    - mkdir -p "{{.BIN_DIR}}/linux"
+    - mkdir -p "{{.DIST_DIR}}"
+    - go build -o "{{.BIN_DIR}}/linux/{{.BIN_NAME}}-linux-amd64-{{.VERSION}}" {{.GO_LDFLAGS}} .
+    - tar -C bin/linux/ -czf "{{.DIST_DIR}}/{{.BIN_NAME}}-linux-amd64-{{.VERSION}}.tar.gz"  "{{.BIN_NAME}}-linux-amd64-{{.VERSION}}"
+
+  clean:
+    cmds:
+    - rm -rf bin/
+    - rm -rf distribution/

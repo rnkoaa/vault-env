@@ -19,3 +19,9 @@ cmd/vaultenv/secret.yml
 cmd/vaultenv/vault-secret.yml
 */.DS_Store
 cmd/vaultenv/vault-env-*
+cmd/vaultenv/bin/
+cmd/vaultenv/build/
+cmd/vaultenv/distribution/
+bin/*
+build/*
+distribution/*

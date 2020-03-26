@@ -1,0 +1,64 @@
+# instructs Vela which syntax version we're using
+version: "1"
+
+secrets:
+  - name: cache_s3_server
+    key: vela/prod-secrets/cache_s3_server
+    engine: native
+    type: shared
+  - name: cache_s3_access_key
+    key: vela/prod-secrets/cache_s3_access_key
+    engine: native
+    type: shared
+  - name: cache_s3_secret_key
+    key: vela/prod-secrets/cache_s3_secret_key
+    engine: native
+    type: shared
+  - name: docker_username
+    key: AgitatedTorvalds/vault-env/docker_username
+    engine: native
+    type: repo
+
+  - name: docker_password
+    key: AgitatedTorvalds/tap-octobot/docker_password
+    engine: native
+    type: repo
+steps:
+  # - name: echo
+  #   image: alpine:latest
+  #   secrets: [ docker_username, docker_password ]
+  #   commands:
+  #     - echo DockerUser ${DOCKER_USERNAME} - ${DOCKER_PASSWORD}   # Output Hello, World 
+
+  - name: restore_cache
+    image: docker.target.com/vela-plugins/s3-cache:6b85c7ec
+    secrets:
+      - cache_s3_server
+      - cache_s3_access_key
+      - cache_s3_secret_key
+    pull: true
+    parameters:
+      action: restore
+
+  - name: build
+    image: golang:latest
+    environment:
+      CGO_ENABLED: '0'
+      GO111MODULE: on
+      GOPRIVATE: 'git.target.com'
+      GOOS: linux
+    commands:
+      - go build -o tapoctobot ./main.go
+      - go build -o vault-env-darwin-amd64-0.0.2 -ldflags "-s -w -X main.Version=v0.0.2" ./cmd/vaultenv
+
+    # key: tap/vela-secrets/ARTIFACTORY_SVCPEJKN001_BINREPO
+    # engine: native
+    # type: shared
+  # - name: github_user
+  #   key: RichardAmoakoAgyei/tap-octobot/github_user
+  #   engine: native
+  #   type: repo
+  # - name: github_access_token
+  #   key: RichardAmoakoAgyei/tap-octobot/github_access_token
+  #   engine: native
+  #   type: repo
